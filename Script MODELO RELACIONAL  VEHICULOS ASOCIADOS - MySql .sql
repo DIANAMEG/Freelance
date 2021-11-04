@@ -1,0 +1,215 @@
+-- ******************* SCRIPT CORRER EN MYSQLQ ******************* --
+
+-- ---------------------------------------------------------------------------
+-- Script MODELO RELACIONAL VEHICULOS ASOCIADOS
+-- PBI 000001 [PROYECTO_FREELANCE] EMPRESA CON VEHICULOS ASOCIADOS
+-- Sprint 1
+-- Esquema: freelance
+-- ---------------------------------------------------------------------------
+
+
+
+create schema freelance;
+
+
+CREATE TABLE `freelance`.`tbl_clasificacion` (
+  `C_CLASIFICACION_ID_PK` INT NOT NULL,
+  `C_DESCRIPCION` VARCHAR(500) NULL,
+  `C_IDENTIFICADOR_APP` VARCHAR(50) NULL,
+  `C_ESTADO` CHAR(1) NULL,
+  PRIMARY KEY (`C_CLASIFICACION_ID_PK`));
+
+
+
+
+use freelance;
+
+INSERT INTO TBL_CLASIFICACION VALUES (1, 'EMPRESA', 'TIPO_USUARIO', 1);
+INSERT INTO TBL_CLASIFICACION VALUES (2, 'REPRESENTANTE LEGAL', 'TIPO_USUARIO', 1);
+INSERT INTO TBL_CLASIFICACION VALUES (3, 'CONDUCTOR', 'TIPO_USUARIO', 1);
+INSERT INTO TBL_CLASIFICACION VALUES (4, 'CC', 'TIPO_DOCUMENTO', 1);
+INSERT INTO TBL_CLASIFICACION VALUES (5, 'CE', 'TIPO_DOCUMENTO', 1);
+INSERT INTO TBL_CLASIFICACION VALUES (6, 'NIT', 'TIPO_DOCUMENTO', 1);
+INSERT INTO TBL_CLASIFICACION VALUES (7, 'OTRO', 'TIPO_DOCUMENTO', 1);
+
+
+
+
+CREATE TABLE `freelance`.`tbl_pais` (
+  `P_PAIS_ID_PK` INT NOT NULL,
+  `P_DESCRIPCION` VARCHAR(500) NULL,
+  `P_PARENT_ID_FK` INT NULL,
+  `P_ESTADO` CHAR(1) NULL,
+  PRIMARY KEY (`P_PAIS_ID_PK`));
+
+
+
+use freelance;
+
+
+INSERT INTO TBL_PAIS VALUES(1, 'COLOMBIA', NULL, 1);
+INSERT INTO TBL_PAIS VALUES(2, 'CUNDINAMARCA', 1, 1);
+INSERT INTO TBL_PAIS VALUES(3, 'BOGOTA D.C', 2, 1);
+INSERT INTO TBL_PAIS VALUES(4, 'ANTIOQUIA', 1, 1);
+INSERT INTO TBL_PAIS VALUES(5, 'MEDELLIN', 4, 1);
+
+
+
+
+
+
+CREATE TABLE `freelance`.`tbl_usuario` (
+  `U_USUARIO_ID_PK` INT NOT NULL,
+  `U_NUM_DOCUMENTO` VARCHAR(45) NULL,
+  `U_NOMBRE` VARCHAR(250) NULL,
+  `U_DIRECCION` VARCHAR(250) NULL,
+  `U_CIUDAD_ID_FK` INT NULL,
+  `U_TELEFONO` VARCHAR(45) NULL,
+  `U_TIPO_DOC_CLAS_ID_FK` INT NULL,
+  `U_TIPO_USU_CLAS_ID_FK` INT NULL,
+  PRIMARY KEY (`U_USUARIO_ID_PK`),
+  INDEX `U_CIUDAD_USUARIO_FK_idx` (`U_CIUDAD_ID_FK` ASC) VISIBLE,
+  INDEX `U_TIPO_DOC_CLASIFICACION_FK_idx` (`U_TIPO_DOC_CLAS_ID_FK` ASC) VISIBLE,
+  INDEX `U_TIPO_USU_CLASIFICACION_FK_idx` (`U_TIPO_USU_CLAS_ID_FK` ASC) VISIBLE,
+  CONSTRAINT `U_CIUDAD_USUARIO_FK`
+    FOREIGN KEY (`U_CIUDAD_ID_FK`)
+    REFERENCES `freelance`.`tbl_pais` (`P_PAIS_ID_PK`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `U_TIPO_DOC_CLASIFICACION_FK`
+    FOREIGN KEY (`U_TIPO_DOC_CLAS_ID_FK`)
+    REFERENCES `freelance`.`tbl_clasificacion` (`C_CLASIFICACION_ID_PK`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `U_TIPO_USU_CLASIFICACION_FK`
+    FOREIGN KEY (`U_TIPO_USU_CLAS_ID_FK`)
+    REFERENCES `freelance`.`tbl_clasificacion` (`C_CLASIFICACION_ID_PK`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+
+
+
+use freelance;
+
+-- EMPRESA
+INSERT INTO TBL_USUARIO VALUES (1, '992345789-3', 'PATRICK S.A.', 'CALLE 1 # 45 - 34', 5, '7654321', 6, 1);
+
+-- REPRESENTANTE LEGAL
+INSERT INTO TBL_USUARIO VALUES (2, '234567876', 'PATRICIO SANCHEZ', 'CARRERA 12 # 12 - 87', 5, '9237345', 5, 2);
+
+-- CONDUCTOR
+INSERT INTO TBL_USUARIO VALUES (3, '987654322', 'PATRICIA GONZALEZ', 'TRANSV 5 # 76 - 39', 5, '7125372', 4, 3);
+INSERT INTO TBL_USUARIO VALUES (4, '23523523', 'DANNA LOPEZ', 'TRANSV 6 # 96 - 93', 3, '7125372', 4, 3);
+INSERT INTO TBL_USUARIO VALUES (5, '76585464', 'ANGELA RIOS', 'CALLE 6 # 96 - 93', 3, '7456321', 4, 3);
+
+
+
+
+
+
+CREATE TABLE `freelance`.`tbl_vehiculo` (
+  `V_VEHICULO_ID_PK` INT NOT NULL,
+  `V_NOMBRE` VARCHAR(45) NULL,
+  `V_PLACA` VARCHAR(15) NULL,
+  `V_MOTOR` VARCHAR(50) NULL,
+  `V_CHASIS` VARCHAR(50) NULL,
+  `V_MODELO` VARCHAR(100) NULL,
+  `V_FECHA_MATRICULA` DATE NULL,
+  `V_PASAJEROS_SENTADOS` INT NULL,
+  `V_PASAJEROS_DE_PIE` INT NULL,
+  `V_PESO_SECO` INT NULL,
+  `V_PESO_BRUTO` INT NULL,
+  `V_CANTIDAD_PUERTAS` INT NULL,
+  `V_MARCA` VARCHAR(45) NULL,
+  `V_LINEA` VARCHAR(45) NULL,
+  PRIMARY KEY (`V_VEHICULO_ID_PK`));
+
+
+
+use freelance;
+
+
+INSERT INTO `freelance`.`tbl_vehiculo` VALUES ('1', 'CARRO UNO', 'ERT-234', 'WRT345', '234SFD', '2021', '2021-03-03', '5', '0', '3000', '2500', '4', 'RENAULT', 'PARTICULAR');
+INSERT INTO `freelance`.`tbl_vehiculo` VALUES ('2', 'CARRO DOS', 'IJH-854', 'UGHDS345', '234SFD', '2019', '2019-03-03', '6', '0', '3000', '2500', '4', 'SUBARU', 'PUBLICO');
+INSERT INTO `freelance`.`tbl_vehiculo` VALUES ('3', 'CARRO TRES', 'LEW-714', 'BNDF123', '234SFD', '2012', '2012-03-03', '4', '0', '3000', '2500', '4', 'CHEVROLET', 'PUBLICO');
+INSERT INTO `freelance`.`tbl_vehiculo` VALUES ('4', 'CAMION', 'TRD-904', 'WDN735', '234SFD', '2017', '2017-03-03', '4', '1', '15000', '12500', '4', 'KIA', 'PARTICULAR');
+INSERT INTO `freelance`.`tbl_vehiculo` VALUES ('5', 'BUS', 'ZQW-216', 'OYG0932', '234SFD', '2020', '2020-03-03', '35', '20', '13000', '11000', '4', 'VOLKSWAGEN', 'PARTICULAR');
+
+
+
+
+CREATE TABLE `freelance`.`tbl_usuarios_x_vehiculos` (
+  `UV_USUARIO_ID_FK` INT NOT NULL,
+  `UV_VEHICULO_ID_FK` INT NOT NULL,
+  `UV_AFILIADO` CHAR(1) NULL,
+  CONSTRAINT `UV_USUARIO_USVE_FK`
+    FOREIGN KEY (`UV_USUARIO_ID_FK`)
+    REFERENCES `freelance`.`tbl_usuario` (`U_USUARIO_ID_PK`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `UV_VEHICULO_USVE_FK`
+    FOREIGN KEY (`UV_VEHICULO_ID_FK`)
+    REFERENCES `freelance`.`tbl_vehiculo` (`V_VEHICULO_ID_PK`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+
+use freelance;
+
+
+INSERT INTO tbl_usuarios_x_vehiculos VALUES (1, 1, 1);
+INSERT INTO tbl_usuarios_x_vehiculos VALUES (3, 1, 1);
+INSERT INTO tbl_usuarios_x_vehiculos VALUES (3, 2, 1);
+INSERT INTO tbl_usuarios_x_vehiculos VALUES (1, 4, 0);
+INSERT INTO tbl_usuarios_x_vehiculos VALUES (4, 1, 1);
+INSERT INTO tbl_usuarios_x_vehiculos VALUES (4, 5, 1);
+INSERT INTO tbl_usuarios_x_vehiculos VALUES (5, 1, 1);
+INSERT INTO tbl_usuarios_x_vehiculos VALUES (5, 5, 1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***************************************************************************************************/
+-- 1. CONSULTA SQL
+
+
+use freelance;
+
+
+SELECT v.V_PLACA Placa_del_vehículo, 
+       c.C_DESCRIPCION Tipo_de_identificación, 
+	   u.U_NUM_DOCUMENTO Número_de_identificación, 
+	   u.U_NOMBRE Nombre, 
+	   cant.Cantidad_Conductores Cantidad_conductores_vinculados_al_vehículo
+  FROM tbl_usuarios_x_vehiculos uv
+ INNER JOIN tbl_usuario u on u.U_USUARIO_ID_PK = uv.UV_USUARIO_ID_FK
+ INNER JOIN tbl_vehiculo v on v.V_VEHICULO_ID_PK = uv.UV_VEHICULO_ID_FK
+ INNER JOIN tbl_clasificacion c on c.C_CLASIFICACION_ID_PK = u.U_TIPO_DOC_CLAS_ID_FK
+ INNER JOIN tbl_clasificacion cTU on cTU.C_CLASIFICACION_ID_PK = u.U_TIPO_USU_CLAS_ID_FK
+ INNER JOIN (SELECT COUNT(1) Cantidad_Conductores, uxv.UV_VEHICULO_ID_FK
+			   FROM tbl_usuarios_x_vehiculos uxv
+			  INNER JOIN tbl_usuario us on us.U_USUARIO_ID_PK = uxv.UV_USUARIO_ID_FK
+			  INNER JOIN tbl_clasificacion clTU on clTU.C_CLASIFICACION_ID_PK = us.U_TIPO_USU_CLAS_ID_FK
+			  WHERE clTU.C_DESCRIPCION = 'CONDUCTOR'
+              GROUP BY uxv.UV_VEHICULO_ID_FK) cant on cant.UV_VEHICULO_ID_FK = uv.UV_VEHICULO_ID_FK 
+ WHERE cTU.C_DESCRIPCION = 'EMPRESA'
+ GROUP BY v.V_PLACA, c.C_DESCRIPCION, u.U_NUM_DOCUMENTO , u.U_NOMBRE, cant.Cantidad_Conductores
+ HAVING cant.Cantidad_Conductores > 2
+ ORDER BY v.V_PLACA;
+ 
